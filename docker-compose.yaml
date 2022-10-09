@@ -1,0 +1,28 @@
+version: "3"
+
+services:
+  kaspa-db-filler:
+    container_name: kaspa-db-filler
+    image: supertypo/kaspa-db-filler
+    restart: unless-stopped
+    environment:
+      DEBUG: "true"
+      KASPAD_HOST_1: 192.168.168.3:16110
+      SQL_URI: postgresql://postgres:password@postgresql:5432/postgres
+    links:
+      - postgresql
+
+  postgresql:
+    container_name: postgresql
+    image: postgres:14-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: postgres
+    volumes:
+      - postgresql:/var/lib/postgresql/data/
+
+volumes:
+  postgresql:
+
