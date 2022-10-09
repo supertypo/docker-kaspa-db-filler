@@ -14,9 +14,10 @@ if [ ! -d "$REPO_DIR" ]; then
   echo $(cd "$REPO_DIR" && git reset --hard HEAD~1)
 fi
 
+tag=$(cd "$REPO_DIR" && git log -n1 --format="%cs.%h")
+
 if $(cd "$REPO_DIR" && git pull | grep -qv "up to date"); then
-  commitId=$(cd "$REPO_DIR" && git log -n1 --format="%h")
-  tag=$(date -u +"%Y-%m-%d").$commitId
+  tag=$(cd "$REPO_DIR" && git log -n1 --format="%cs.%h")
   echo
   echo "Git repo changed, building tag '$tag'."
   echo
@@ -24,13 +25,12 @@ if $(cd "$REPO_DIR" && git pull | grep -qv "up to date"); then
   docker build --pull --build-arg REPO_DIR="$REPO_DIR" -t $DOCKER_REPO:$tag "$BUILD_DIR"
   docker tag $DOCKER_REPO:$tag $DOCKER_REPO:latest
   echo Tagged $DOCKER_REPO:latest
-
-  if [ "$PUSH" = "push" ]; then
-    docker push $DOCKER_REPO:$tag
-    docker push $DOCKER_REPO:latest
-  fi
 else
-  commitId=$(cd "$REPO_DIR" && git log -n1 --format="%h")
-  echo "Git repo is still at '$commitId', skipping build."
+  echo "Git repo is still at '$tag', skipping build."
+fi
+
+if [ "$PUSH" = "push" ]; then
+  docker push $DOCKER_REPO:$tag
+  docker push $DOCKER_REPO:latest
 fi
 
