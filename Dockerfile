@@ -24,11 +24,11 @@ RUN addgroup -S -g 55746 kaspa-db-filler \
 
 WORKDIR /app
 
+USER kaspa-db-filler
+
 COPY --chown=kaspa-db-filler:kaspa-db-filler "$REPO_DIR" /app
 
-RUN pipenv install --deploy
-
-USER kaspa-db-filler
+RUN pipenv install --deploy -v
 
 ENTRYPOINT ["/usr/bin/dumb-init", "--"]
 
