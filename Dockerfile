@@ -9,15 +9,11 @@ ENV APP_USER=kaspa-db-filler \
   APP_UID=55746 \
   APP_DIR=/app
 
-ENV KASPAD_HOST_1=kaspad:16110 \
-  SQL_URI=postgresql://postgres:password@postgresql:5432/postgres
-
 RUN apt-get update && \
   apt-get install -y --no-install-recommends \
     gcc \
     libc6-dev \
-    libpq-dev \
-    dumb-init
+    libpq-dev
 
 RUN pip install \
   pipenv
@@ -64,5 +60,5 @@ ENTRYPOINT ["/usr/bin/dumb-init", "--"]
 
 CMD pipenv run python main.py
 
-COPY --chown=kaspa-db-filler:kaspa-db-filler --from=builder /app /app
+COPY --chown=$APP_USER:$APP_USER --from=builder $APP_DIR $APP_DIR
 

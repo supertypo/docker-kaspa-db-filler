@@ -5,6 +5,8 @@ DOCKER_REPO=supertypo/kaspa-db-filler
 ARCHES="linux/amd64 linux/arm64"
 
 BUILD_DIR="$(dirname $0)"
+PUSH=$1
+TAG=${2:-main}
 REPO_URL="https://github.com/lAmeR1/kaspa-db-filler.git"
 REPO_DIR="work/kaspa-db-filler"
 
